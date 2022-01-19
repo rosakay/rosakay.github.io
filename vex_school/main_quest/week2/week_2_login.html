@@ -29,7 +29,7 @@
                   placeholder="Password" required>
                 <label for="password">Password</label>
               </div>
-              <button class="btn btn-lg btn-primary w-100 mt-3" type="submit" id="login">
+              <button class="btn btn-lg btn-primary w-100 mt-3" type="button" id="login">
                 登入
               </button>
             </form>
@@ -52,7 +52,7 @@
       crossorigin="anonymous"></script>
 
 		<script>
-			const url = 'https://vue3-course-api.hexschool.io//v2'; // 請加入站點
+			const url = 'https://vue3-course-api.hexschool.io/v2'; // 請加入站點
 			const path = 'karlchou'; // 請加入個人 API Path
 
 			// #1 如何串接 API 資料
@@ -84,7 +84,7 @@
 				axios.post(`${url}/admin/signin`, user)
 					.then( (res) => {
 						const { token, expired } = res.data;
-						// console.log(token, expired);
+						console.log(token, expired);
 						document.cookie = `hexToken=${ token }; expires=${ new Date(expired) };`;
 
 						UrlRedirection();
@@ -104,17 +104,16 @@
 					} )
 					// 失敗的結果
 					.catch( (error) => {
-						console.log("4654564645646545")
 						console.dir(error);
 					} )
 
 			}
 
 			function UrlRedirection() { // 轉址
-				console.log("登入成功，5秒後入場。");
+				console.log("登入成功，3秒後入場。");
 				setTimeout(() => {
 					window.location.replace("https://rosakay.github.io/vex_school/main_quest/week2/week_2_admin.html");
-				}, 5000);
+				}, 3000);
 			}
 		</script>
   </body>
