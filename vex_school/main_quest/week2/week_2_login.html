@@ -100,20 +100,19 @@
 				axios.post(`${url}/api/user/check`)
 					.then( (res) => {
 						console.log(res.data)
-
 						UrlRedirection();
-
 					} )
 					// 失敗的結果
 					.catch( (error) => {
+						console.log("4654564645646545")
 						console.dir(error);
 					} )
 
 			}
 
 			function UrlRedirection() { // 轉址
+				console.log("登入成功，5秒後入場。");
 				setTimeout(() => {
-					console.log("登入成功，5秒後入場。");
 					window.location.replace("https://rosakay.github.io/vex_school/main_quest/week2/week_2_admin.html");
 				}, 5000);
 			}
