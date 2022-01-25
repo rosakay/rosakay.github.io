@@ -25,35 +25,6 @@
 		<script src='https://cdnjs.cloudflare.com/ajax/libs/axios/0.9.1/axios.min.js'
 		integrity='sha512-Xk3wWei2TGrsh9kDSBKUMIjw/86sLUvhtnv9f7fOuIwhhiUTKz8szkWkzHthrM5Bb3Bu9idSzkxOrkzhcneuiw=='
 		crossorigin='anonymous'></script>
-		<script>
-			const url = 'https://vue3-course-api.hexschool.io/v2'; // 請加入站點
-			const path = 'karlchou'; // 請加入個人 API Path
-			// 如果不想每次都驗證登入，可以放到外層，會自動驗證
-			const token = document.cookie.replace(/(?:(?:^|.*;\s*)hexToken\s*\=\s*([^;]*).*$)|^.*$/, "$1");
-			axios.defaults.headers.common['Authorization'] = token;
-			checkLogin();
-
-			function checkLogin(params) {
-				// #4  確認是否登入
-				axios.post(`${url}/api/user/check`)
-					.then( (res) => {
-						console.log(res.data)
-					} )
-					// 失敗的結果
-					.catch( (error) => {
-						console.dir(error);
-						UrlRedirection();
-					} )
-			}
-
-			function UrlRedirection() { // 轉址
-				console.log("資格驗證失敗，3秒後退出。");
-				setTimeout(() => {
-					window.location.replace("https://rosakay.github.io/vex_school/main_quest/week2/week_2_login.html");
-				}, 3000);
-			}
-
-		</script>
 	</head>
 	<body>
 		<div id="app">
