@@ -116,43 +116,54 @@
         </div>
         <script type="module">
 
-            import { createApp } from "https://cdnjs.cloudflare.com/ajax/libs/vue/3.2.26/vue.esm-browser.min.js";
+            import { createApp } from "https://cdnjs.cloudflare.com/ajax/libs/vue/3.2.27/vue.esm-browser.min.js";
             
             
-            axios.get(`${url}/api/${path}/admin/products`)
-                .then( (res) => {
-                    // console.log(res.data.products)
-                    // 產品資料格式
-                    const products = res.data.products;
-                        console.log(products)
-                    
-                    
-                    const app = createApp({
+
+                const app = createApp({
                         data() {
                             return {
+                                url: 'https://vue3-course-api.hexschool.io/v2',
+                                path: 'karlchou',
                                 products: [],
                                 temp: {},
                             };
                         },
                         created() {
-                            this.products = products;
+                            // this.products = products;
+                            
+                            // 將儲存在 cookie 的 token 取出
+                            const token = document.cookie.replace(/(?:(?:^|.*;\s*)hexToken\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+                            axios.defaults.headers.common['Authorization'] = token;
+                            // 檢查登入
+                            this.checkLogin()
                         },
                         methods: {
-                            mOver(key) {
-                                // console.log(key)
-                                this.temp.imageUrl = this.temp.imagesUrl[key]
+                            // 檢查登入狀態
+                            checkLogin() {
+                                axios.post(`${this.url}/api/user/check`)
+                                    .then(() => {
+                                        this.getProducts();
+                                    })
+                                    .catch((err) => {
+                                        alert(err.data.message);
+                                        window.location = 'week_2_login.html'
+                                    })
+                            },
+                            // 取得產品資訊
+                            getProducts() {
+                                axios.get(`${this.url}/api/${this.path}/admin/products`)
+                                    .then((res) => {
+                                        this.products = res.data.products;
+                                    })
+                                    .catch((err) => {
+                                        console.bir(err);
+                                    })
                             }
                         }
                     });
 
                     app.mount("#app");
-                } )
-                // 失敗的結果
-                .catch( (error) => {
-                    console.dir(error);
-                } )
-
-            
 
 
         </script>

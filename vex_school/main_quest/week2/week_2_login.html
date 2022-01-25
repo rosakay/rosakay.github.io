@@ -21,15 +21,15 @@
             <form id="form" class="form-signin">
               <div class="form-floating mb-3">
                 <input type="email" class="form-control" id="username"
-                  placeholder="name@example.com" required autofocus>
+                  placeholder="name@example.com" v-model="user.username" required autofocus>
                 <label for="username">Email address</label>
               </div>
               <div class="form-floating">
                 <input type="password" class="form-control" id="password"
-                  placeholder="Password" required>
+                  placeholder="Password"v-model="user.password" required>
                 <label for="password">Password</label>
               </div>
-              <button class="btn btn-lg btn-primary w-100 mt-3" type="button" id="login">
+              <button class="btn btn-lg btn-primary w-100 mt-3" type="button" id="login" @click="login">
                 登入
               </button>
             </form>
@@ -51,66 +51,61 @@
       integrity="sha384-j0CNLUeiqtyaRmlzUHCPZ+Gy5fQu0dQ6eZ/xAww941Ai1SxSY+0EQqNXNE6DZiVc"
       crossorigin="anonymous"></script>
 
-		<script>
-			const url = 'https://vue3-course-api.hexschool.io/v2'; // 站點
-			const path = 'karlchou'; // 個人 API Path
-
-			const emailInput = document.querySelector('#username');
-			const pwInput = document.querySelector('#password');
-			const loginBtn = document.querySelector('#login');
+		<script type="module">
 			
-			// 自動驗證
-			const token = document.cookie.replace(/(?:(?:^|.*;\s*)hexToken\s*\=\s*([^;]*).*$)|^.*$/, "$1");
-			axios.defaults.headers.common['Authorization'] = token;
-			checkLogin();
+            import { createApp } from "https://cdnjs.cloudflare.com/ajax/libs/vue/3.2.27/vue.esm-browser.min.js";
 
-			loginBtn.addEventListener('click', login);
-
-			function login() {
-				const username = emailInput.value;
-				const password = pwInput.value;
-				
-				const user = {
-					username,
-					password
+			const app = createApp({
+				data() {
+					return {
+						url: 'https://vue3-course-api.hexschool.io/v2', // 站點
+						path: 'karlchou', // 個人 API Path
+						user: {
+							"username": '',
+							"password": ''
+						}
+					}
+				},
+				created() {
+					this.checkLogin();
+				},
+				methods: {
+					login() {
+						// 登入帳號
+						axios.post(`${this.url}/admin/signin`, this.user)
+							.then((res) => {
+								// 抓出 token 和 唯一值
+								const { token, expired } = res.data;
+								// 存入 cookie
+								document.cookie = `hexToken=${token};expires=${new Date(expired)};`
+								alert("登入成功");
+								this.UrlRedirection();
+							})
+							.catch((err) => {
+								// alert(err.data.message)
+								console.dir(err);
+							})
+					},
+					checkLogin(params) {
+						const token = document.cookie.replace(/(?:(?:^|.*;\s*)hexToken\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+							axios.defaults.headers.common['Authorization'] = token;
+						// 確認是否登入
+						axios.post(`${this.url}/api/user/check`)
+							.then( (res) => {
+								// console.log(res.data)
+								this.UrlRedirection();
+							} )
+							// 失敗的結果
+							.catch( (err) => {
+								console.dir(err);
+							} )
+					},
+					UrlRedirection() { // 轉址
+						window.location = 'week_2_admin.html'
+					},
 				}
-				// console.log( username, password );
-
-				// 發送 API 至遠端並登入（並儲存 Token）
-				axios.post(`${url}/admin/signin`, user)
-					.then( (res) => {
-						const { token, expired } = res.data;
-						console.log(token, expired);
-						document.cookie = `hexToken=${ token }; expires=${ new Date(expired) };`;
-
-						UrlRedirection();
-					} )
-					.catch( (error) => {
-						console.dir(error);
-					} )
-				
-			}
-
-			function checkLogin(params) {
-				// 確認是否登入
-				axios.post(`${url}/api/user/check`)
-					.then( (res) => {
-						console.log(res.data)
-						UrlRedirection();
-					} )
-					// 失敗的結果
-					.catch( (error) => {
-						console.dir(error);
-					} )
-
-			}
-
-			function UrlRedirection() { // 轉址
-				console.log("登入成功，3秒後入場。");
-				setTimeout(() => {
-					window.location.replace("https://rosakay.github.io/vex_school/main_quest/week2/week_2_admin.html");
-				}, 3000);
-			}
+			});
+			app.mount('#app');
 		</script>
   </body>
 
